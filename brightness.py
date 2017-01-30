@@ -4,6 +4,10 @@ import time
 GPIO.setmode(GPIO.BOARD)
 #ldr okuma pini tanimlama
 pin_to_ldr = 40
+def smooth (deger):
+	bli = open('/sys/class/backlight/rpi_backlight/brightness','w')
+        bli.write(deger)
+        bli.close()
 def rc_time (pin_to_ldr):
 	count = 0
   
@@ -24,26 +28,24 @@ def rc_time (pin_to_ldr):
 try:
 	# Main loop
 	while True:
-		bl = open('/sys/class/backlight/rpi_backlight/brightness','w')
 		okunan = 0
 		okunan = rc_time(pin_to_ldr)
 		if okunan <= 1500:
-			bl.write('200')
+			smooth('200')
 		elif okunan <= 5000:
-       			bl.write('160')
+       			smooth('150')
 		elif okunan <= 15000:
-        		bl.write('130')
-		elif okunan <= 30000:
-        		bl.write('100')
+        		smooth('120')
+		elif okunan <= 25000:
+        		smooth('90')
 		elif okunan <= 50000:
-        		bl.write('75')
+        		smooth('70')
 		elif okunan <= 100000:
-        		bl.write('50')
+        		smooth('50')
 		elif okunan <= 140000:
-			bl.write('30')
+			smooth('30')
 		else:
-			bl.write('20')
-		bl.close()
-		time.sleep(5) 
+			smooth('20')
+		time.sleep(3) 
 finally:
 	GPIO.cleanup()
